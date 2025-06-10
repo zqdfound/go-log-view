@@ -1,0 +1,20 @@
+servers:
+  - name: "web-server-1"
+    host: "192.168.1.100"
+    port: 22
+    username: "user"
+    password: "password"  # 建议使用密钥认证
+    key_path: ""          # 私钥路径
+    log_files:
+      - path: "/var/log/nginx/access.log"
+        alias: "nginx-access"
+      - path: "/var/log/nginx/error.log"
+        alias: "nginx-error"
+  - name: "db-server-1"
+    host: "192.168.1.101"
+    port: 22
+    username: "user"
+    password: "password"
+    log_files:
+      - path: "/var/log/postgresql/postgresql.log"
+        alias: "postgres-main"
