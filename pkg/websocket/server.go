@@ -25,7 +25,7 @@ type WebSocketServer struct {
 	clients    map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
-	broadcast  chan []byte
+	Broadcast  chan []byte
 	mutex      sync.Mutex
 }
 
@@ -34,7 +34,7 @@ func NewWebSocketServer() *WebSocketServer {
 		clients:    make(map[*Client]bool),
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
-		broadcast:  make(chan []byte),
+		Broadcast:  make(chan []byte),
 	}
 }
 
@@ -52,7 +52,7 @@ func (s *WebSocketServer) Run() {
 				close(client.send)
 			}
 			s.mutex.Unlock()
-		case message := <-s.broadcast:
+		case message := <-s.Broadcast:
 			s.mutex.Lock()
 			for client := range s.clients {
 				select {

@@ -2,10 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"go-log-view/pkg/sshclient"
 	"go-log-view/pkg/websocket"
-	"gopkg.in/yaml.v2"
 	"io"
 	"log"
 	"net/http"
@@ -13,6 +11,9 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/gorilla/mux"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -65,7 +66,7 @@ func main() {
 	router.HandleFunc("/api/command", executeCommandHandler).Methods("POST")
 
 	// 静态文件服务（Vue前端）
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./dist")))
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./web/dist")))
 
 	log.Println("Server started on :8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
@@ -180,7 +181,7 @@ func startLogHandler(w http.ResponseWriter, r *http.Request) {
 			}
 
 			jsonMessage, _ := json.Marshal(message)
-			wsServer.broadcast <- jsonMessage
+			wsServer.Broadcast <- jsonMessage
 		}
 	}()
 

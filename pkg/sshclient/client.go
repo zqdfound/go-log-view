@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"time"
 
 	"golang.org/x/crypto/ssh"
@@ -38,7 +39,21 @@ func NewSSHClient(host string, port int, username, password, keyPath string) (*S
 
 	return &SSHClient{client: client}, nil
 }
+func parsePrivateKey(keyPath string) (ssh.Signer, error) {
+	// Read the private key file
+	keyData, err := os.ReadFile(keyPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read private key file: %w", err)
+	}
 
+	// Parse the private key
+	signer, err := ssh.ParsePrivateKey(keyData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse private key: %w", err)
+	}
+
+	return signer, nil
+}
 func (c *SSHClient) ExecuteCommand(cmd string) (string, error) {
 	session, err := c.client.NewSession()
 	if err != nil {
